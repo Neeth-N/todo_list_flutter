@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
 }
 
 class ToDoPage extends StatefulWidget {
-  const ToDoPage({super.key, required this.title});
+  const ToDoPage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -32,11 +33,13 @@ class ToDoPage extends StatefulWidget {
 
 class _ToDoState extends State<ToDoPage> {
 
-
-  String task = '';
+  String curv = 'Task';
+  List<String> task = [];
+  // final _formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> formkey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-
+    print(curv);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -45,19 +48,42 @@ class _ToDoState extends State<ToDoPage> {
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
+          key: formkey,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TextField(
-              onSubmitted: (value) => setState(() => task = value),
-              textInputAction: TextInputAction.done,
+            TextFormField(
+              // onSubmitted: (value) => setState(() => task = value),
+              initialValue: curv,
+              validator: (val){
+                  if (val != null) {
+                    val = val.trim();
+                    if(val.isNotEmpty) {
+                      task.add(val);
+                      print(task);
+                      setState(() {});
+                    }
+                  }
+                  else{
+                    return 'Enter Something';
+                  }
+                  return null;
+              },
+              // textInputAction: TextInputAction.done,
               decoration: const InputDecoration(
                 labelText: "Task",
                 hintText: "Enter your Task here",
               ),
             ),
-            Text('your Tasks : '),
-            Text(task),
+            TextButton(
+                onPressed: (){
+                  if (formkey.currentState!.validate()) {
+                    formkey.currentState!.reset();
+                  }
+                },
+                child:
+                Text('Submit', style: TextStyle(fontSize: 25))
+            ),
           ],
         ),
       ),
