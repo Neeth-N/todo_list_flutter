@@ -34,52 +34,73 @@ class ToDoPage extends StatefulWidget {
 class _ToDoState extends State<ToDoPage> {
 
   List<Todo> task = [];
+  String curv = '';
   // final _formKey = GlobalKey<FormState>();
   GlobalKey<FormState> formkey = GlobalKey();
+  late DateTime selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = DateTime.now();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        appBar: AppBar(
         title: Text(widget.title),
-      ),
-      body: Container(
-        child: Column(
-          children: [
-            Padding(
-            padding: const EdgeInsets.all(15),
-
-          child: Form(
-            key: formkey,
-            child: TextFormField(
-              // onSubmitted: (value) => setState(() => task = value),
-              validator: (val){
-                  if (val != null) {
-                    val = val.trim();
-                    if(val.isNotEmpty) {
-                      task.add(val);
-                      print(task);
-                      setState(() {});
-                    }
-                  }
-                  else{
-                    return 'Enter Something';
-                  }
-                  return null;
-              },
-              // textInputAction: TextInputAction.done,
-              decoration: const InputDecoration(
-                labelText: "Task",
-                hintText: "Enter your Task here",
-              ),
-            ),
-          ),
-            ),
+    ),
+    body: Padding(
+    padding: const EdgeInsets.all(15.0),
+    child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    Form(
+    key: formkey,
+    child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    TextFormField(
+    validator: (val) {
+    if (val == null || val.isEmpty) {
+    return 'Enter something';
+    }
+    else{
+      curv = val;
+    return null;
+    }
+    },
+    decoration: InputDecoration(
+    labelText: "Task",
+    hintText: "Enter your task here",
+    ),
+    ),
+    SizedBox(height: 10),
+    Row(
+    children: [
+    Expanded(
+    child: TextButton(
+    onPressed: () => _selectDate(context),
+    child: Text(
+    'Select Due Date',
+    style: TextStyle(fontSize: 16),
+    ),
+    ),
+    ),
 
             TextButton(
+
                 onPressed: (){
-                  if (formkey.currentState!.validate()) {}
-                    formkey.currentState!.reset();
+                  if (formkey.currentState!.validate()) {
+
+                  }
+                      setState(() {
+                      task.add(Todo(
+                      action: curv.trim(),
+                      dueDate: selectedDate,
+                ));
+                  });
                 },
                 child:
                     Padding(
@@ -87,11 +108,50 @@ class _ToDoState extends State<ToDoPage> {
                 child: Text('Submit', style: TextStyle(fontSize: 20),
                 ))),
 
-            Text("YOUR TASKS : ", style: TextStyle(fontSize: 25),),
 
-          ],
-        ),
+    ],
+    ),
+      Padding(
+        padding: EdgeInsets.only(left: 5,top: 25),
+        child: Text('Your Tasks :', style: TextStyle(fontSize: 25)),
       ),
+      // Expanded(
+      //   child: ListView.builder(
+      //     itemCount: task.length,
+      //     itemBuilder: (context, index) {
+      //       return ListTile(
+      //         title: Text(task[index].action),
+      //         subtitle: Text(
+      //           'Due Date: ${task[index].dueDate.day}/${task[index].dueDate.month}/${task[index].dueDate.year}',
+      //         ),
+      //       );
+      //     },
+      //   ),
+      // ),
+
+    ],
+    ),
+    ),
+    ],
+    ),
+    ),
     );
   }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
 }
+
+
+
