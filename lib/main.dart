@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:todo_list/model/todo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,28 +33,26 @@ class ToDoPage extends StatefulWidget {
 
 class _ToDoState extends State<ToDoPage> {
 
-  String curv = 'Task';
-  List<String> task = [];
+  List<Todo> task = [];
   // final _formKey = GlobalKey<FormState>();
   GlobalKey<FormState> formkey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    print(curv);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
+      body: Container(
         child: Column(
-          key: formkey,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            TextFormField(
+          children: [
+            Padding(
+            padding: const EdgeInsets.all(15),
+
+          child: Form(
+            key: formkey,
+            child: TextFormField(
               // onSubmitted: (value) => setState(() => task = value),
-              initialValue: curv,
               validator: (val){
                   if (val != null) {
                     val = val.trim();
@@ -75,15 +73,22 @@ class _ToDoState extends State<ToDoPage> {
                 hintText: "Enter your Task here",
               ),
             ),
+          ),
+            ),
+
             TextButton(
                 onPressed: (){
-                  if (formkey.currentState!.validate()) {
+                  if (formkey.currentState!.validate()) {}
                     formkey.currentState!.reset();
-                  }
                 },
                 child:
-                Text('Submit', style: TextStyle(fontSize: 25))
-            ),
+                    Padding(
+                       padding:  const EdgeInsets.only(right: 15),
+                child: Text('Submit', style: TextStyle(fontSize: 20),
+                ))),
+
+            Text("YOUR TASKS : ", style: TextStyle(fontSize: 25),),
+
           ],
         ),
       ),
